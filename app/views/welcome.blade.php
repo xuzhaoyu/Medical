@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>¹©»õÉÌ</title>
+        <title>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</title>
     </head>
     <body>
-    <a href="{{ URL::route('hospital-login') }}">HLÒ½ÔºµÇÂ¼</a>
-    <a href="{{ URL::route('hospital-signup') }}">HSÒ½Ôº×¢²á</a>
-    <a href="{{ URL::route('supplier-login') }}">SL¹©»õÉÌµÇÂ¼</a>
-    <a href="{{ URL::route('supplier-signup') }}">SS¹©»õÉÌ×¢²á</a>
+    <a href="{{ URL::route('hospital-login') }}">åŒ»é™¢ç™»å½•</a>
+    <a href="{{ URL::route('hospital-signup') }}">åŒ»é™¢æ³¨å†Œ</a>
+    <a href="{{ URL::route('supplier-login') }}">ä¾›è´§å•†ç™»å½•</a>
+    <a href="{{ URL::route('supplier-signup') }}">ä¾›è´§å•†æ³¨å†Œ</a>
     </body>
 </html>

@@ -1,7 +1,7 @@
 {{ Form::open(array('route' => 'hospital-login-post')) }}
-{{ Form::label('LoginName', '²Ù×÷ÈËµÇÂ¼Ãû³Æ:') }}
+{{ Form::label('LoginName', 'ç™»å½•å:') }}
 {{ Form::text('LoginName') }}
-{{ Form::label('password', 'ÃÜÂë:') }}
+{{ Form::label('password', 'å¯†ç :') }}
 {{ Form::text('password') }}
-{{ Form::submit('È·ÈÏ') }}
+{{ Form::submit('ç¡®è®¤') }}
 {{ Form::close() }}

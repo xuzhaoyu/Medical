@@ -1,15 +1,15 @@
 {{ Form::open(array('route' => 'hospital-signup-post')) }}
-{{ Form::label('HName', 'Ò½ÔºÃû³Æ:') }}
+{{ Form::label('HName', 'åŒ»é™¢åç§°:') }}
 {{ Form::text('HName') }}
-{{ Form::label('address', 'µØÖ·:') }}
+{{ Form::label('address', 'åœ°å€Ö·:') }}
 {{ Form::text('address') }}
-{{ Form::label('UName', '²Ù×÷ÈËÃû³Æ:') }}
+{{ Form::label('UName', 'æ“ä½œäººå‘˜åç§°:') }}
 {{ Form::text('UName') }}
-{{ Form::label('LoginName', '²Ù×÷ÈËµÇÂ¼Ãû³Æ:') }}
+{{ Form::label('LoginName', 'ç™»å½•å:') }}
 {{ Form::text('LoginName') }}
-{{ Form::label('password', 'ÃÜÂë:') }}
+{{ Form::label('password', 'å¯†ç :') }}
 {{ Form::text('password') }}
-{{ Form::label('phone', 'µç»°:') }}
+{{ Form::label('phone', 'ç”µè¯:') }}
 {{ Form::text('phone') }}
-{{ Form::submit('È·ÈÏ') }}
+{{ Form::submit('ç¡®è®¤') }}
 {{ Form::close() }}
