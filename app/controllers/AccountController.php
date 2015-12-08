@@ -14,7 +14,8 @@ class AccountController extends \BaseController
 
     public function postHLogin()
     {
-        return View::make('account.HLogin');
+        $input = Input::all();
+        dd($input['LoginName']);
     }
 
     public function getHSignup()
