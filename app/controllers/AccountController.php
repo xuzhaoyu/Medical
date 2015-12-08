@@ -39,7 +39,7 @@ class AccountController extends \BaseController{
     public function postHSignup()
     {
         $validator = Validator::make(Input::all(), array(
-            'username' => 'required|max:20|unique:users',
+            'username' => 'required|max:20|unique:hospital',
             'password' => 'required|max:60|min:6',
             'password_again' => 'required|max:60|same:password',
             'HName' => 'required|max:60',
