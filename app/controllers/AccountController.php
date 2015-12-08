@@ -39,7 +39,7 @@ class AccountController extends \BaseController{
     public function postHSignup()
     {
         $validator = Validator::make(Input::all(), array(
-            'username' => 'required|max:20|unique:users',
+            'username' => 'required|max:60|unique:hospital',
             'password' => 'required|max:60|min:6',
             'password_again' => 'required|max:60|same:password',
             'HName' => 'required|max:60',
@@ -53,7 +53,6 @@ class AccountController extends \BaseController{
                 ->withErrors($validator)
                 ->withInput();
         } else {
-
             $user = Hospital::create(array(
                 'username' => Input::get('username'),
                 'password' => Input::get('password'),
