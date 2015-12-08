@@ -8,12 +8,38 @@
  */
 class AccountController extends \BaseController
 {
-    public function getHLogin()
+    public function getLogin()
     {
-        return View::make('account.HLogin');
+        return View::make('account.login');
     }
 
-    public function postHLogin()
+    public function postLogin()
+    {
+        $email = Input::get('email');
+        $password = Input::get('password');
+
+        $h = DB::table('hospital')
+            ->where('username', '=', $email)
+            ->select('username', 'password')
+            ->first();
+
+        $s = DB::table('supplier')
+            ->where('email', '=', $email)
+            ->select('username', 'password')
+            ->first();
+
+        if ((!is_null($h)) && (Hash::check($password, $h->password))) return View::make('hospital');
+        if ((!is_null($s)) && (Hash::check($password, $s->password))) return View::make('supplier');
+
+        return Redirect::route('account-login')-> with('global', '用户名或密码错误');
+    }
+
+    public function getHSignup()
+    {
+        return View::make('account.HSignup');
+    }
+
+    public function postHSignup()
     {
         $validator = Validator::make(Input::all(), array(
             'username' => 'required|max:20|unique:users',
@@ -45,30 +71,6 @@ class AccountController extends \BaseController
                     ->with('global', 'Your account has already been created');
             }
         }
-        $input = Input::all();
-        dd($input['LoginName']);
-    }
-
-    public function getHSignup()
-    {
-        return View::make('account.HSignup');
-    }
-
-    public function postHSignup()
-    {
-        $input = Input::all();
-        dd($input['LoginName']);
-    }
-
-    public function getSLogin()
-    {
-        return View::make('account.SLogin');
-    }
-
-    public function postSLogin()
-    {
-        $input = Input::all();
-        dd($input['LoginName']);
     }
 
     public function getSSignup()

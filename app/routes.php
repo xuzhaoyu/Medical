@@ -15,14 +15,14 @@ Route::get('/', function () {
     return View::make('welcome');
 });
 
-Route::get('/hospital/login', array(
-    'as' => 'hospital-login',
-    'uses' => 'AccountController@getHLogin'
+Route::get('/account/login', array(
+    'as' => 'account-login',
+    'uses' => 'AccountController@getLogin'
 ));
 
-Route::post('/hospital/login', array(
-    'as' => 'hospital-login-post',
-    'uses' => 'AccountController@postHLogin'
+Route::post('/account/login', array(
+    'as' => 'account-login-post',
+    'uses' => 'AccountController@postLogin'
 ));
 
 Route::get('/hospital/signup', array(
@@ -33,16 +33,6 @@ Route::get('/hospital/signup', array(
 Route::post('/hospital/signup', array(
     'as' => 'hospital-signup-post',
     'uses' => 'AccountController@postHSignup'
-));
-
-Route::get('/supplier/login', array(
-    'as' => 'supplier-login',
-    'uses' => 'AccountController@getSLogin'
-));
-
-Route::post('/supplier/login', array(
-    'as' => 'supplier-login-post',
-    'uses' => 'AccountController@postSLogin'
 ));
 
 Route::get('/supplier/signup', array(
