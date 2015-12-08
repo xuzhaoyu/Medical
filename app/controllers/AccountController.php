@@ -8,6 +8,11 @@
  */
 class AccountController extends \BaseController{
 
+    public function welcome()
+    {
+        return View::make('welcome');
+    }
+
     public function postLogin()
     {
         $email = Input::get('email');
@@ -56,7 +61,7 @@ class AccountController extends \BaseController{
 
             $user = Hospital::create(array(
                 'username' => Input::get('username'),
-                'password' => Input::get('password'),
+                'password' => Hash::make(Input::get('password')),
                 'HName' => Input::get('HName'),
                 'address' => Input::get('address'),
                 'department' => Input::get('dept'),
@@ -66,7 +71,7 @@ class AccountController extends \BaseController{
 
             if ($user) {
                 return Redirect::route('account-login')
-                    ->with('global', 'Your account has already been created');
+                    ->with('global', '您的帐户已经被成功创建');
             }
         }
     }
@@ -78,8 +83,35 @@ class AccountController extends \BaseController{
 
     public function postSSignup()
     {
-        $input = Input::all();
-        dd($input['LoginName']);
+        $validator = Validator::make(Input::all(), array(
+            'username' => 'required|max:60',
+            'email' => 'required|max:60|unique:supplier',
+            'password' => 'required|max:60|min:6',
+            'password_again' => 'required|max:60|same:password',
+            'SName' => 'required|max:60',
+            'address' => 'required|max:60',
+            'phone' => 'required|max:60'
+        ));
+
+        if ($validator->fails()) {
+            return Redirect::route('supplier-signup')
+                ->withErrors($validator)
+                ->withInput();
+        } else {
+            $user = Supplier::create(array(
+                'username' => Input::get('username'),
+                'password' => Hash::make(Input::get('password')),
+                'SName' => Input::get('SName'),
+                'address' => Input::get('address'),
+                'phone' => Input::get('phone'),
+                'email' => Input::get('email'),
+            ));
+
+            if ($user) {
+                return Redirect::route('account-login')
+                    ->with('global', '您的帐户已经被成功创建');
+            }
+        }
     }
 
 
