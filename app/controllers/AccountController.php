@@ -7,10 +7,6 @@
  * Time: 12:33 PM
  */
 class AccountController extends \BaseController{
-    public function getLogin()
-    {
-        return View::make('account.login');
-    }
 
     public function postLogin()
     {

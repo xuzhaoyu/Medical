@@ -29,6 +29,4 @@
 <br><br>
 {{ Form::submit('确认') }}
 {{ Form::close() }}
-
-</html>
 @stop
