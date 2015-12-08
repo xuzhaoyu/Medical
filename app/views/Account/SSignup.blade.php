@@ -14,6 +14,9 @@
 {{ Form::label('password', '密码:') }}
 {{ Form::text('password') }}
 <br>
+{{ Form::label('password_again', '再次输入密码:') }}
+{{ Form::text('password_again') }}
+<br>
 {{ Form::label('phone', '电话:') }}
 {{ Form::text('phone') }}
 <br>

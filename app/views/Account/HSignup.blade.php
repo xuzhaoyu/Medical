@@ -5,14 +5,17 @@
 {{ Form::label('address', '地址ַ:') }}
 {{ Form::text('address') }}
 <br>
-{{ Form::label('UName', '操作人员名称:') }}
-{{ Form::text('UName') }}
+{{ Form::label('dept', '部门名称:') }}
+{{ Form::text('dept') }}
 <br>
-{{ Form::label('LoginName', '登录名:') }}
-{{ Form::text('LoginName') }}
+{{ Form::label('username', '登录名:') }}
+{{ Form::text('username') }}
 <br>
 {{ Form::label('password', '密码:') }}
 {{ Form::text('password') }}
+<br>
+{{ Form::label('password_again', '再次输入密码:') }}
+{{ Form::text('password_again') }}
 <br>
 {{ Form::label('phone', '电话:') }}
 {{ Form::text('phone') }}
