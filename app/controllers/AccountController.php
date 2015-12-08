@@ -20,32 +20,35 @@ class AccountController extends \BaseController
 
     public function getHSignup()
     {
-        return View::make('home');
+        return View::make('account.HSignup');
     }
 
     public function postHSignup()
     {
-        return View::make('home');
+        $input = Input::all();
+        dd($input['LoginName']);
     }
 
     public function getSLogin()
     {
-        return View::make('home');
+        return View::make('account.SLogin');
     }
 
     public function postSLogin()
     {
-        return View::make('home');
+        $input = Input::all();
+        dd($input['LoginName']);
     }
 
     public function getSSignup()
     {
-        return View::make('home');
+        return View::make('account.SSignup');
     }
 
     public function postSSignup()
     {
-        return View::make('home');
+        $input = Input::all();
+        dd($input['LoginName']);
     }
 
 
