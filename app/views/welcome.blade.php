@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>������</title>
+        <title>Medical</title>
     </head>
     <body>
     <a href="{{ URL::route('hospital-login') }}">医院登录</a>
