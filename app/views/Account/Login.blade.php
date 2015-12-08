@@ -1,3 +1,6 @@
+@extends('layouts.main')
+
+@section('content')
 <form action=" {{ URL::route('account-login-post') }} " method="post">
 
     <div>
@@ -20,3 +23,6 @@
     <input type="submit" value="登录">
     {{ Form::token() }}
 </form>
+
+</html>
+@stop

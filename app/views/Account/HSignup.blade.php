@@ -1,3 +1,6 @@
+@extends('layouts.main')
+
+@section('content')
 {{ Form::open(array('route' => 'hospital-signup-post')) }}
 {{ Form::label('HName', '医院名称:') }}
 {{ Form::text('HName') }}
@@ -12,13 +15,15 @@
 {{ Form::text('username') }}
 <br>
 {{ Form::label('password', '密码:') }}
-{{ Form::text('password') }}
+{{ Form::password('password') }}
 <br>
 {{ Form::label('password_again', '再次输入密码:') }}
-{{ Form::text('password_again') }}
+{{ Form::password('password_again') }}
 <br>
 {{ Form::label('phone', '电话:') }}
 {{ Form::text('phone') }}
-<br>
+<br><br>
 {{ Form::submit('确认') }}
 {{ Form::close() }}
+</html>
+@stop

@@ -2,17 +2,17 @@
 
 
 <html>
-      <head>
-          <title> GPRS </title>
-      </head>
+<head>
+    <title> 医疗器械自动下单系统 </title>
+</head>
 
-      <body>
-      <br>
-      <br>
-            @if (Session::has('global'))
-                    <p>{{ Session::get('global') }}</p>
-            @endif
+<body>
+@include('layouts.navigation')
 
-            @yield('content')
-      </body>
+@if (Session::has('global'))
+<p>{{ Session::get('global') }}</p>
+@endif
+
+@yield('content')
+</body>
 </html>

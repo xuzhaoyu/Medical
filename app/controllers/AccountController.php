@@ -18,6 +18,8 @@ class AccountController extends \BaseController
         $email = Input::get('email');
         $password = Input::get('password');
 
+//        dd(Hash::make(Input::get('password')));
+
         $h = DB::table('hospital')
             ->where('username', '=', $email)
             ->select('username', 'password')
@@ -57,13 +59,14 @@ class AccountController extends \BaseController
                 ->withInput();
         } else {
 
-            $email = Input::get('email');
-            $username = Input::get('username');
-            $password = Input::get('password');
-
-            $user = User::create(array(
-                'username' => $username,
-                'password' => $password,
+            $user = Hospital::create(array(
+                'username' => Input::get('username'),
+                'password' => Input::get('password'),
+                'HName' => Input::get('HName'),
+                'address' => Input::get('address'),
+                'department' => Input::get('dept'),
+                'phone' => Input::get('phone'),
+                'email' => Input::get('email'),
             ));
 
             if ($user) {
