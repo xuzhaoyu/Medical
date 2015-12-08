@@ -6,8 +6,7 @@
  * Date: 12/8/2015
  * Time: 12:33 PM
  */
-class AccountController extends \BaseController
-{
+class AccountController extends \BaseController{
     public function getLogin()
     {
         return View::make('account.login');
@@ -29,7 +28,7 @@ class AccountController extends \BaseController
             ->first();
 
         if ((!is_null($h)) && (Hash::check($password, $h->password))) return View::make('hospital');
-        if ((!is_null($s)) && (Hash::check($password, $s->password))) return View::make('supplier');
+        if ((!is_null($s)) && (Hash::check($password, $s->password))) return View::make('supplier')->with('name',$s);
 
         return Redirect::route('account-login')-> with('global', '用户名或密码错误');
     }

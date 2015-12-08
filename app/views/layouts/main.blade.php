@@ -3,7 +3,7 @@
 
 <html>
       <head>
-          <title> GPRS </title>
+          <title> Medical </title>
       </head>
 
       <body>

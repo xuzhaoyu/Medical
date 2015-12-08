@@ -44,3 +44,13 @@ Route::post('/supplier/signup', array(
     'as' => 'supplier-signup-post',
     'uses' => 'AccountController@postSSignup'
 ));
+
+Route::get('/supplier/incomplete', array(
+    'as' => 'incomplete',
+    'uses' => 'SupplierController@getIncomplete'
+));
+
+Route::get('/supplier/complete', array(
+    'as' => 'complete',
+    'uses' => 'SupplierController@getComplete'
+));
