@@ -18,4 +18,4 @@
 {{ Form::text('password') }}
 {{ Form::label('phone', 'µç»°:') }}
 {{ Form::text('phone') }}
-{{ Form::close() }}
+{{ Form::close() }} 
