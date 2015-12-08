@@ -15,11 +15,6 @@ Route::get('/', function () {
     return View::make('welcome');
 });
 
-Route::get('/account/login', array(
-    'as' => 'account-login',
-    'uses' => 'AccountController@getLogin'
-));
-
 Route::post('/account/login', array(
     'as' => 'account-login-post',
     'uses' => 'AccountController@postLogin'

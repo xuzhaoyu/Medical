@@ -5,7 +5,7 @@ use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableTrait;
 use Illuminate\Auth\Reminders\RemindableInterface;
 
-class User extends Eloquent implements UserInterface, RemindableInterface {
+class Hospital extends Eloquent implements UserInterface, RemindableInterface {
 
     use UserTrait, RemindableTrait;
 
@@ -14,7 +14,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
      *
      * @var string
      */
-    protected $table = 'users';
+    protected $table = 'hospital';
     public $timestamps = false;
     protected $fillable = array('username', 'password','HName','address','department','phone');
 

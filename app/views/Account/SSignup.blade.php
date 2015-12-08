@@ -1,3 +1,7 @@
+@extends('layouts.main')
+
+@section('content')
+
 {{ Form::open(array('route' => 'supplier-signup-post')) }}
 {{ Form::label('HName', '供货商名称:') }}
 {{ Form::text('HName') }}
@@ -12,16 +16,19 @@
 {{ Form::text('LoginName') }}
 <br>
 {{ Form::label('password', '密码:') }}
-{{ Form::text('password') }}
+{{ Form::password('password') }}
 <br>
 {{ Form::label('password_again', '再次输入密码:') }}
-{{ Form::text('password_again') }}
+{{ Form::password('password_again') }}
 <br>
 {{ Form::label('phone', '电话:') }}
 {{ Form::text('phone') }}
 <br>
 {{ Form::label('email', '电子邮箱:') }}
 {{ Form::text('email') }}
-<br>
+<br><br>
 {{ Form::submit('确认') }}
 {{ Form::close() }}
+
+</html>
+@stop

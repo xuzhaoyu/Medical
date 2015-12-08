@@ -14,9 +14,9 @@ class Supplier extends Eloquent implements UserInterface, RemindableInterface {
      *
      * @var string
      */
-    protected $table = 'Supplier';
-
-    protected $fillable = array('username', 'password','HName','address','dept','phone');
+    protected $table = 'supplier';
+    public $timestamps = false;
+    protected $fillable = array('username', 'password','SName','address','email','phone');
 
     /**
      * The attributes excluded from the model's JSON form.
