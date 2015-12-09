@@ -30,7 +30,7 @@ class AccountController extends \BaseController{
             ->select('username', 'password')
             ->first();
 
-        if ((!is_null($h)) && (Hash::check($password, $h->password))) return View::make('hospital');
+        if ((!is_null($h)) && (Hash::check($password, $h->password))) return Redirect::route('hospital-list');
         if ((!is_null($s)) && (Hash::check($password, $s->password))) return View::make('supplier')->with('name',$s);
 
         return Redirect::route('account-login')-> with('global', '用户名或密码错误');

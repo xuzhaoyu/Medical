@@ -31,6 +31,26 @@ Route::post('/hospital/signup', array(
     'uses' => 'AccountController@postHSignup'
 ));
 
+Route::get('/hospital/list', array(
+    'as' => 'hospital-list',
+    'uses' => 'OrderController@getList'
+));
+
+Route::post('/hospital/list', array(
+    'as' => 'hospital-list-post',
+    'uses' => 'OrderController@postNewItem'
+));
+
+Route::get('/hospital/cart', array(
+    'as' => 'hospital-cart',
+    'uses' => 'OrderController@getCart'
+));
+
+Route::post('/hospital/cart', array(
+    'as' => 'hospital-cart-post',
+    'uses' => 'OrderController@postCart'
+));
+
 Route::get('/supplier/signup', array(
     'as' => 'supplier-signup',
     'uses' => 'AccountController@getSSignup'
