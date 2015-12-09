@@ -11,9 +11,10 @@
 |
 */
 
-Route::get('/', function () {
-    return View::make('welcome');
-});
+Route::get('/', array(
+    'as' => 'account-login',
+    'uses' => 'AccountController@welcome'
+));
 
 Route::post('/account/login', array(
     'as' => 'account-login-post',
