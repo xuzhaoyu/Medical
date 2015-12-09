@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
 @extends('layouts.supplier')
-=======
-@extends('layouts.main')
->>>>>>> Stashed changes
 
 @section('content')
 <head>

@@ -17,4 +17,14 @@ class SupplierController extends \BaseController{
         $num= Orders::where('status','=', 'complete')->groupBy('orderNum')->orderBy('orderNum','DESC')->get();
         return View::make('Supplier.complete')->with('orders',$comp)->with('nums', $num);
     }
+
+    public function getSend($id){
+        date_default_timezone_set('Asia/Shanghai');
+        $date = date('Y-m-d H:i:s');
+        $order =  Orders::find($id);
+        $order->status = 'sent';
+        $order->SendDate = $date;
+        $order->save();
+        return Redirect::to(URL::route('incomplete'));
+    }
 }

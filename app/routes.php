@@ -46,6 +46,11 @@ Route::get('/supplier/incomplete', array(
     'uses' => 'SupplierController@getIncomplete'
 ));
 
+Route::get('/supplier/incomplete/send/{order}', array(
+    'as' => 'send',
+    'uses' => 'SupplierController@getSend'
+));
+
 Route::get('/supplier/complete', array(
     'as' => 'complete',
     'uses' => 'SupplierController@getComplete'

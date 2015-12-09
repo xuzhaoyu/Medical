@@ -38,7 +38,7 @@
 
     @foreach ($nums as $num)
         订单号：{{$num->orderNum}} 订单日期：{{$num->OrderDate}} 发货日期：{{$num->SendDate}} 完成日期：{{$num->ReceivedDate}}
-        状态：{{$num->status}} 订货机构：{{$num->HId}} 订货人：{{$num->HUser}}
+        状态：{{$num->status}} 订货机构：{{$num->HId}} 订货人：{{$num->HUser}} @if($num->status != 'sent')<a href ="{{URL::route('incomplete')}}/send/{{$num->id}}">发货</a> @endif
         <table>
             <tr>
                 <th>产品名称</th>
