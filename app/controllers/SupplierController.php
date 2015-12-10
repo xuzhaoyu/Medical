@@ -7,8 +7,8 @@
  */
 class SupplierController extends \BaseController{
     public function getIncomplete(){
-        $inc= Orders::where('status','<>', 'complete')->orderBy('orderNum','DESC')->get();
-        $num= Orders::where('status','<>', 'complete')->groupBy('orderNum')->orderBy('orderNum','DESC')->get();
+        $inc= Orders::where('status','=', 'ordered')->orderBy('orderNum','DESC')->get();
+        $num= Orders::where('status','=', 'ordered')->groupBy('orderNum')->orderBy('orderNum','DESC')->get();
         return View::make('Supplier.incomplete')->with('orders',$inc)->with('nums', $num);
     }
 

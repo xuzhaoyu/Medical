@@ -7,6 +7,6 @@
 </head>
 
 <body>
-{{$name->username}}用户你好
+{{Auth::user()->username}}用户你好
 </body>
 @stop

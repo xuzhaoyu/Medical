@@ -52,13 +52,17 @@
     @foreach ($products as $p)
     <tr>
         <?php
-        $Hid = DB::table('hospital_barcode')
+        $name = Auth::user()->username;
+        $HName = Auth::user()->HName;
+        $h = DB::table('hospital_barcode')
             ->where('Pid', '=', $p->id)
+            ->where('HName', '=', $HName)
             ->select('id', 'HBarcode')
             ->first();
+        if (is_null($h)) $barcode = '未找到院内码'; else $barcode = $h->HBarcode;
         ?>
         <td><?php echo Form::text($p->id, 0); ?></td>
-        <td>{{$Hid->HBarcode}}</td>
+        <td>{{$barcode}}</td>
         <td>{{$p->PName}}</td>
         <td>{{$p->MName}}</td>
         <td>{{$p->PSize}}</td>

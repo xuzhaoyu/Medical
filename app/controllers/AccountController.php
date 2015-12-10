@@ -20,18 +20,11 @@ class AccountController extends \BaseController{
 
 //        dd(Hash::make(Input::get('password')));
 
-        $h = DB::table('hospital')
-            ->where('username', '=', $email)
-            ->select('username', 'password')
-            ->first();
+        if (Auth::attempt(array('username' => $email, 'password' => $password), true))
+            return Redirect::route('hospital-list');
 
-        $s = DB::table('supplier')
-            ->where('email', '=', $email)
-            ->select('username', 'password')
-            ->first();
-
-        if ((!is_null($h)) && (Hash::check($password, $h->password))) return Redirect::route('hospital-list');
-        if ((!is_null($s)) && (Hash::check($password, $s->password))) return View::make('supplier')->with('name',$s);
+        if (Auth::attempt(array('email' => $email, 'password' => $password), true))
+            return View::make('supplier');
 
         return Redirect::route('account-login')-> with('global', '用户名或密码错误');
     }
@@ -44,7 +37,7 @@ class AccountController extends \BaseController{
     public function postHSignup()
     {
         $validator = Validator::make(Input::all(), array(
-            'username' => 'required|max:20|unique:hospital',
+            'username' => 'required|max:20|unique:users',
             'password' => 'required|max:60|min:6',
             'password_again' => 'required|max:60|same:password',
             'HName' => 'required|max:60',
@@ -59,7 +52,7 @@ class AccountController extends \BaseController{
                 ->withInput();
         } else {
 
-            $user = Hospital::create(array(
+            $user = User::create(array(
                 'username' => Input::get('username'),
                 'password' => Hash::make(Input::get('password')),
                 'HName' => Input::get('HName'),
@@ -85,7 +78,7 @@ class AccountController extends \BaseController{
     {
         $validator = Validator::make(Input::all(), array(
             'username' => 'required|max:60',
-            'email' => 'required|max:60|unique:supplier',
+            'email' => 'required|max:60|unique:users',
             'password' => 'required|max:60|min:6',
             'password_again' => 'required|max:60|same:password',
             'SName' => 'required|max:60',
@@ -98,7 +91,7 @@ class AccountController extends \BaseController{
                 ->withErrors($validator)
                 ->withInput();
         } else {
-            $user = Supplier::create(array(
+            $user = User::create(array(
                 'username' => Input::get('username'),
                 'password' => Hash::make(Input::get('password')),
                 'SName' => Input::get('SName'),

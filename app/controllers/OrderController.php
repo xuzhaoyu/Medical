@@ -22,26 +22,31 @@ class OrderController extends \BaseController{
         $products = DB::table('product')
             ->select('id', 'MName', 'PName', 'PSize', 'mode', 'FDAcode', 'FDAexpire')
             ->get();
-
         foreach ($products as $p) {
             $number = (int)Input::get($p -> id);
             if ($number > 0) {
-                $Hcode = DB::table('hospital_barcode')
-                    -> where('PId', '=', $p -> id)
-                    -> first();
+                $HName = Auth::user()->HName;
+                $h = DB::table('hospital_barcode')
+                    ->where('Pid', '=', $p->id)
+                    ->where('HName', '=', $HName)
+                    ->select('id', 'HBarcode')
+                    ->first();
+                if (is_null($h)) $barcode = '未找到院内码'; else $barcode = $h->HBarcode;
 
-                $item = Orders::create(array(
-                    'orderNum' => '20151109000001',
+                $items = Orders::create(array(
+                    'orderNum' => (string)date('YmdHi') . (string)rand(1000,9999),
+                    'MName' => $p->MName,
                     'PName' => $p->PName,
-                    'PBarcode' => '',
-                    'HBarcode' => $Hcode->HBarcode,
-                    'expire' => '',
+                    'PSize' => $p->PSize,
                     'PCount' => $number,
-                    'HId' => '1',
-                    'HUser' => '王红霞1',
+                    'PBarcode' => '',
+                    'HBarcode' => $barcode,
+                    'expire' => '',
+                    'HName' => Auth::user()->HName,
+                    'HUser' => Auth::user()->username,
                     'SId' => '',
                     'SUser' => '',
-                    'status' => 'ordered',
+                    'status' => 'pending',
                     'OrderDate' => date('Y-m-d H:i:s'),
                     'SendDate' => '',
                     'ReceivedDate' => '',
@@ -54,34 +59,38 @@ class OrderController extends \BaseController{
 
     public function getCart()
     {
-        $p = DB::table('product')
-            ->select('id', 'MName', 'PName', 'PSize', 'mode', 'FDAcode', 'FDAexpire')
+        $HName = Auth::user() -> HName;
+        $p = DB::table('orders')
+            ->where('HName', '=', $HName)
+            ->where('status', '=', 'pending')
             ->get();
-        return View::make('Hospital.cart')->with('products', $p);
+        return View::make('Hospital.cart')->with('orders', $p);
+    }
+
+    public function getCartDelete($order_id)
+    {
+        DB::table('orders')
+            ->where('id', '=', $order_id)
+            ->delete();
+        return Redirect::to(URL::route('hospital-cart'));
     }
 
     public function postCart()
     {
-        dd();
-        $email = Input::get('email');
-        $password = Input::get('password');
-
-//        dd(Hash::make(Input::get('password')));
-
-        $h = DB::table('hospital')
-            ->where('username', '=', $email)
-            ->select('username', 'password')
-            ->first();
-
-        $s = DB::table('supplier')
-            ->where('email', '=', $email)
-            ->select('username', 'password')
-            ->first();
-
-        if ((!is_null($h)) && (Hash::check($password, $h->password))) return View::make('hospital');
-        if ((!is_null($s)) && (Hash::check($password, $s->password))) return View::make('supplier')->with('name',$s);
-
-        return Redirect::route('account-login')-> with('global', '用户名或密码错误');
+        date_default_timezone_set('Asia/Shanghai');
+        $products = DB::table('product')
+            ->select('id')
+            ->get();
+        foreach ($products as $p) {
+            $number = (int)Input::get($p -> id);
+            if ($number > 0) {
+                $items = Orders::where('id', '=', $p -> id)->update(array(
+                    'PCount' => $number,
+                    'status' => 'ordered',
+                    'SendDate' => date('Y-m-d H:i:s')
+                ));
+            }
+        }
+        return Redirect::route('hospital-list')-> with('global', '已成功确认订单，并给代理商发送邮件');
     }
-
 }

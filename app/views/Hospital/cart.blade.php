@@ -33,6 +33,7 @@
 
 <body>
 
+请再次确认订单并发送
 <form action=" {{ URL::route('hospital-cart-post') }} " method="post">
     <table>
         <tr><th><input type="submit" value="确认下单"></th></tr>
@@ -46,27 +47,18 @@
             <th>产品名称</th>
             <th>厂家名称</th>
             <th>规格</th>
-            <th>管理模式</th>
-            <th>注册证号</th>
-            <th>注册到期日</th>
         </tr>
-        @foreach ($products as $p)
+        @foreach ($orders as $p)
         <tr>
-            <?php
-            $Hid = DB::table('hospital_barcode')
-                ->where('Pid', '=', $p->id)
-                ->select('id', 'HBarcode')
-                ->first();
-            ?>
-            <td><a href="{{ URL::route('account-login') }}">删除产品</a></td>
-            <td><?php echo Form::text($p->id, 0); ?></td>
-            <td>{{$Hid->HBarcode}}</td>
+            <td><a href="{{URL::route('hospital-cart')}}/delete/{{$p->id}}">删除产品</a></td>
+            <td><?php
+                $number = $p->PCount;
+                echo Form::text($p->id, $number);
+            ?></td>
+            <td>{{$p->HBarcode}}</td>
             <td>{{$p->PName}}</td>
             <td>{{$p->MName}}</td>
             <td>{{$p->PSize}}</td>
-            <td>{{$p->mode}}</td>
-            <td>{{$p->FDAcode}}</td>
-            <td>{{$p->FDAexpire}}</td>
         </tr>
         @endforeach
     </table>

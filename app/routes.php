@@ -51,6 +51,11 @@ Route::post('/hospital/cart', array(
     'uses' => 'OrderController@postCart'
 ));
 
+Route::get('/hospital/cart/delete/{order_id}', array(
+    'as' => 'hospital-cart-delete',
+    'uses' => 'OrderController@getCartDelete'
+));
+
 Route::get('/supplier/signup', array(
     'as' => 'supplier-signup',
     'uses' => 'AccountController@getSSignup'
