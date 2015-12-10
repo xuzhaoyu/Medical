@@ -55,6 +55,12 @@
                     {{$order->PName}}
                     {{$order->PSize}}
                     {{$order->HBarcode}}
+                    剩余数量: {{$order->PCount - $order->actual}}
+                    {{ Form::open(array('route' => 'scan')) }}
+                    {{ Form::text('product') }}
+                    {{ Form::hidden('id', $order->id) }}
+                    {{ Form::submit('确认') }}
+                    {{ Form::close() }}
                     <!-- <tr>
                         <td>{{$order->PName}}</td>
                         <td>{{$order->PBarcode}}</td>

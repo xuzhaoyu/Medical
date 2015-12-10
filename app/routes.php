@@ -85,3 +85,8 @@ Route::get('/supplier/complete', array(
     'as' => 'complete',
     'uses' => 'SupplierController@getComplete'
 ));
+
+Route::post('/supplier/scan', array(
+    'as' => 'scan',
+    'uses' => 'SupplierController@postScan'
+));

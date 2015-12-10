@@ -28,4 +28,9 @@ class SupplierController extends \BaseController{
         $order->save();
         return Redirect::to(URL::route('incomplete'));
     }
+
+    public function postScan(){
+        $input = Input::all();
+        dd($input['id']);
+    }
 }
