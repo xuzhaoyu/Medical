@@ -35,7 +35,6 @@
     </head>
 
     <body>
-
     @foreach ($nums as $num)
         订单号：{{$num->orderNum}} 订单日期：{{$num->OrderDate}} 发货日期：{{$num->SendDate}} 完成日期：{{$num->ReceivedDate}}
         状态：{{$num->status}} 订货机构：{{$num->HId}} 订货人：{{$num->HUser}}
