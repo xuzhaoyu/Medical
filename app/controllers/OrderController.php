@@ -19,6 +19,8 @@ class OrderController extends \BaseController{
     public function postNewItem()
     {
         date_default_timezone_set('Asia/Shanghai');
+        $rand = (string)rand(1000,9999);
+
         $products = DB::table('product')
             ->select('id', 'MName', 'PName', 'PSize', 'mode', 'FDAcode', 'FDAexpire')
             ->get();
@@ -34,7 +36,7 @@ class OrderController extends \BaseController{
                 if (is_null($h)) $barcode = '未找到院内码'; else $barcode = $h->HBarcode;
 
                 $items = Orders::create(array(
-                    'orderNum' => (string)date('YmdHi') . (string)rand(1000,9999),
+                    'orderNum' => (string)date('YmdHi') . $rand,
                     'MName' => $p->MName,
                     'PName' => $p->PName,
                     'PSize' => $p->PSize,

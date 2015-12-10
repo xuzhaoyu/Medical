@@ -16,6 +16,7 @@ li{
     <ul>
         <li><a href="{{ URL::route('incomplete') }}">未完成的订单</a></li>
         <li><a href="{{ URL::route('complete') }}">完成的订单</a></li>
+        <li><a href="{{ URL::route('account-logoff') }}">退出</a></li>
     </ul>
 </nav>
 <br>

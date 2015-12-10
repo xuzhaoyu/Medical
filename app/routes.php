@@ -21,6 +21,11 @@ Route::post('/account/login', array(
     'uses' => 'AccountController@postLogin'
 ));
 
+Route::get('/account/logoff', array(
+    'as' => 'account-logoff',
+    'uses' => 'AccountController@getLogoff'
+));
+
 Route::get('/hospital/signup', array(
     'as' => 'hospital-signup',
     'uses' => 'AccountController@getHSignup'

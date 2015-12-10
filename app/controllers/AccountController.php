@@ -13,6 +13,12 @@ class AccountController extends \BaseController{
         return View::make('welcome');
     }
 
+    public function getLogoff()
+    {
+        Auth::logout();
+        return Redirect::route('account-login');
+    }
+
     public function postLogin()
     {
         $email = Input::get('email');
