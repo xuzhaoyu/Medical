@@ -22,7 +22,7 @@ class OrderController extends \BaseController{
         $rand = (string)rand(1000,9999);
 
         $products = DB::table('product')
-            ->select('id', 'MName', 'PName', 'PSize', 'mode', 'FDAcode', 'FDAexpire', 'SId')
+            ->select('id', 'MName', 'PName', 'PSize', 'mode', 'FDAcode', 'FDAexpire')
             ->get();
         foreach ($products as $p) {
             $number = (int)Input::get($p -> id);
@@ -46,7 +46,7 @@ class OrderController extends \BaseController{
                     'expire' => '',
                     'HName' => Auth::user()->HName,
                     'HUser' => Auth::user()->username,
-                    'SId' => $p->SId,
+                    'SId' => '',
                     'SUser' => '',
                     'status' => 'pending',
                     'OrderDate' => date('Y-m-d H:i:s'),
@@ -92,17 +92,6 @@ class OrderController extends \BaseController{
                     'SendDate' => date('Y-m-d H:i:s')
                 ));
             }
-        }
-        $orders = Orders::where('orderNum', '=', Input::get('id'))->groupBy('SId')->get(['SId']);
-        foreach($orders as $order) {
-            $email = User::where('id', '=', $order->SId)->first(['email']);
-            $stuff = Orders::where('orderNum', '=', Input::get('id'))->where('SId', '=', $order->SId)->get();
-            Mail::send('email', array('stuffs' => $stuff, 'email'), function($message) use ($email, $stuff)
-            {
-                $message->from('xuzhaoyu1234@sina.com', 'Laravel');
-                $message->to($email->email, 'John Smith')->subject('订单: '.$stuff[0]->orderNum);
-            });
-            echo $stuff;
         }
         return Redirect::route('hospital-list')-> with('global', '已成功确认订单，并给代理商发送邮件');
     }
