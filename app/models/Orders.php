@@ -18,7 +18,7 @@ class Orders extends Eloquent implements UserInterface, RemindableInterface {
     public $timestamps = false;
     protected $fillable = array('PSize', 'PCount','PBarcode','MName',
         'HBarcode','expire','HName','HUser','SId','SUser','status',
-        'OrderDate','SendDate','ReceivedDate','orderNum', 'PName', 'PBarSecondary', 'actual', 'selected');
+        'OrderDate','SendDate','ReceivedDate','orderNum', 'PName', 'PBarSecondary', 'actual', 'selected', 'SerialNum');
 
     /**
      * The attributes excluded from the model's JSON form.

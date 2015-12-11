@@ -64,6 +64,7 @@
     </table>
 
     <table>
+        {{ Form::hidden('id', $orders[0]->orderNum) }}
         <tr><th><input type="submit" value="确认下单"></th></tr>
     </table>
 </form>

@@ -47,10 +47,18 @@ class SupplierController extends \BaseController
         else if ((strlen($barcode) == 13) && ($barcode[0] == '6')) $type = 'EAN-13';
 
         if (strcmp($type, 'GS1-128-primary') == 0) {
+            $item = DB::table('product')->select('MName', 'PName', 'PSize')->where('PBarcode', '=', $barcode)->first();
+            $order = Orders::where('MName', '=', $item->MName)->where('PName', '=', $item->PName)->where('PSize', '=', $item->PSize)->orderBy('orderNum', 'ASC')->first();
+            $order->PBarcode = $barcode;
+            $order->SUser = Auth::user()->username;
+            $order->SId = Auth::user()->id;
+            $order->selected = 1;
+            $order->save();
             $a = array('Mcode' => substr($barcode, 3, 8),
                 'huohao' => substr($barcode, 12, 4));
-            dd($a);
         } else if (strcmp($type, 'GS1-128-secondary') == 0) {
+            $order = Orders::where('selected', '=', 1)->where('SId', '=', Auth::user()->id)->first();
+            $order->PBarSecondary = $barcode;
             $date_start = strpos($barcode, '17') + 2;
             $date_length = 6;
             $date = date_create_from_format('Ymd H:i:s', '20' . substr($barcode, $date_start, $date_length) . ' 00:00:00');
@@ -71,20 +79,28 @@ class SupplierController extends \BaseController
                 $lot = substr($barcode, $lot_start);
                 $serial = ' ';
             }
+            $order->expire = date_format($date, 'Y-m-d H:i:s');
+            $order->actual = $order->actual + 1;
+            $order->selected = 0;
+            $order->SerialNum = $serial;
+            $order->lot = $lot;
+            $order->save();
             $a = array(
                 'expire' => date_format($date, 'Y-m-d H:i:s'),
                 'LOT' => $lot,
                 'SerialNum' => $serial);
-            dd($a);
         } else if (strcmp($type, 'HIBC') == 0) {
             if (strcmp(substr($barcode, 0, 2), '+H') == 0) {
                 $item = DB::table('product')->select('MName', 'PName', 'PSize')->where('PBarcode', '=', $barcode)->first();
                 $order = Orders::where('MName', '=', $item->MName)->where('PName', '=', $item->PName)->where('PSize', '=', $item->PSize)->orderBy('orderNum', 'ASC')->first();
+                $order->SUser = Auth::user()->username;
+                $order->SId = Auth::user()->id;
                 $order->PBarcode = $barcode;
                 $order->selected = 1;
                 $order->save();
             } else {
-                $order = Orders::where('selected', '=', 1)->first();
+                $order = Orders::where('selected', '=', 1)->where('SId', '=', Auth::user()->id)->first();
+                //dd($order);
                 $order->PBarSecondary = $barcode;
                 $exp = '0000-00-00 00:00:00';
                 if ($barcode[1] != '$') {
