@@ -11,7 +11,7 @@ class OrderController extends \BaseController{
     public function getList()
     {
         $p = DB::table('product')
-            ->select('id', 'MName', 'PName', 'PSize', 'mode', 'FDAcode', 'FDAexpire')
+            ->select('id', 'MName', 'PName', 'PSize', 'SName', 'mode', 'FDAcode', 'FDAexpire')
             ->get();
         return View::make('Hospital.productList')->with('products', $p);
     }
@@ -19,11 +19,11 @@ class OrderController extends \BaseController{
     public function postNewItem()
     {
         date_default_timezone_set('Asia/Shanghai');
-        $rand = (string)rand(1000,9999);
 
         $products = DB::table('product')
-            ->select('id', 'MName', 'PName', 'PSize', 'mode', 'FDAcode', 'FDAexpire')
+            ->select('id', 'MName', 'PName', 'PBarcode', 'PSize', 'mode', 'FDAcode', 'FDAexpire')
             ->get();
+
         foreach ($products as $p) {
             $number = (int)Input::get($p -> id);
             if ($number > 0) {
@@ -35,13 +35,14 @@ class OrderController extends \BaseController{
                     ->first();
                 if (is_null($h)) $barcode = '未找到院内码'; else $barcode = $h->HBarcode;
 
+                dd($p->PBcarcode);
+
                 $items = Orders::create(array(
-                    'orderNum' => (string)date('YmdHi') . $rand,
                     'MName' => $p->MName,
                     'PName' => $p->PName,
                     'PSize' => $p->PSize,
                     'PCount' => $number,
-                    'PBarcode' => '',
+                    'PBarcode' => $p->PBcarcode,
                     'HBarcode' => $barcode,
                     'expire' => '',
                     'HName' => Auth::user()->HName,
@@ -77,22 +78,39 @@ class OrderController extends \BaseController{
         return Redirect::to(URL::route('hospital-cart'));
     }
 
+    public function postSearch()
+    {
+        $s = Input::get() ["search"];
+        $s = str_replace(" ", "%", $s);
+        $items = DB::table('product')
+            ->where('PName', 'LIKE', '%'.$s.'%')
+            ->orWhere('SName', 'LIKE', '%'.$s.'%')
+            ->select('id', 'MName', 'PName', 'SName', 'PBarcode', 'PSize', 'mode', 'FDAcode', 'FDAexpire')
+            ->get();
+        //return Redirect::to(URL::route('hospital-list'))->with('products', $items);
+        return View::make('Hospital.productList')->with('products', $items);
+    }
+
     public function postCart()
     {
         date_default_timezone_set('Asia/Shanghai');
+        $rand = (string)rand(1000,9999);
+
         $products = DB::table('product')
-            ->select('id')
+            ->select('id', 'SId')
             ->get();
         foreach ($products as $p) {
             $number = (int)Input::get($p -> id);
             if ($number > 0) {
                 $items = Orders::where('id', '=', $p -> id)->update(array(
+                    'orderNum' => (string)date('YmdHi') . $p->SId . $rand,
                     'PCount' => $number,
                     'status' => 'ordered',
                     'SendDate' => date('Y-m-d H:i:s')
                 ));
             }
         }
+
         return Redirect::route('hospital-list')-> with('global', '已成功确认订单，并给代理商发送邮件');
     }
 }
