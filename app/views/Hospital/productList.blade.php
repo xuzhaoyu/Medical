@@ -33,6 +33,14 @@
 
 <body>
 
+搜产品/搜代理商名称：<form action=" {{ URL::route('hospital-list-search') }} " method="post">
+<?php echo Form::text("search"); ?>
+
+<input type="submit" value="搜索">
+</form>
+
+<br>
+
 <form action=" {{ URL::route('hospital-list-post') }} " method="post">
 <table>
     <tr><th><input type="submit" value="提交全部订单"></th></tr>
@@ -44,6 +52,7 @@
         <th>院内码</th>
         <th>产品名称</th>
         <th>厂家名称</th>
+        <th>代理商名称</th>
         <th>规格</th>
         <th>管理模式</th>
         <th>注册证号</th>
@@ -61,10 +70,12 @@
             ->first();
         if (is_null($h)) $barcode = '未找到院内码'; else $barcode = $h->HBarcode;
         ?>
-        <td><?php echo Form::text($p->id, 0); ?></td>
+        <td>
+            <?php echo Form::text($p->id, 0); ?></td>
         <td>{{$barcode}}</td>
         <td>{{$p->PName}}</td>
         <td>{{$p->MName}}</td>
+        <td>{{$p->SName}}</td>
         <td>{{$p->PSize}}</td>
         <td>{{$p->mode}}</td>
         <td>{{$p->FDAcode}}</td>

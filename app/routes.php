@@ -41,6 +41,11 @@ Route::get('/hospital/list', array(
     'uses' => 'OrderController@getList'
 ));
 
+Route::post('/hospital/list/search', array(
+    'as' => 'hospital-list-search',
+    'uses' => 'OrderController@postSearch'
+));
+
 Route::post('/hospital/list', array(
     'as' => 'hospital-list-post',
     'uses' => 'OrderController@postNewItem'
