@@ -50,7 +50,7 @@
             @foreach ($orders as $order)
                 @if ($order->orderNum == $num->orderNum)
                     <br>
-                    数量:{{$order->PCount}}|
+                    数量:{{$order->PCount}}
                     {{$order->MName}}
                     {{$order->PName}}
                     {{$order->PSize}}

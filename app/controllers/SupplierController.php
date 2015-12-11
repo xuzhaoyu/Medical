@@ -30,7 +30,21 @@ class SupplierController extends \BaseController{
     }
 
     public function postScan(){
-        $input = Input::all();
-        dd($input['id']);
+        $input = Input::get();
+        $barcode = $input['product'];
+        $type = '';
+
+        if (strcmp(substr($barcode, 0, 2), '01') == 0) $type = 'GS1-128';
+        if ($barcode[0] == '+') $type = 'HIBC';
+        if ((strlen($barcode) == 13) && ($barcode[0] == '6')) $type = 'EAN-13';
+
+        if (strcmp($type, 'GS1-128') == 0) {
+            $length = strlen($barcode);
+
+        }
+        if (strcmp($type, 'HIBC') == 0) dd($type);
+        if (strcmp($type, 'EAN-13') == 0) dd($type);
+
+
     }
 }
