@@ -48,6 +48,7 @@
             <th>厂家名称</th>
             <th>规格</th>
         </tr>
+
         @foreach ($orders as $p)
         <tr>
             <td><a href="{{URL::route('hospital-cart')}}/delete/{{$p->id}}">删除产品</a></td>

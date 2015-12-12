@@ -1,4 +1,4 @@
-@extends('layouts.hospital')
+    @extends('layouts.hospital')
 
 @section('content')
 
