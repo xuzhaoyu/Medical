@@ -59,6 +59,13 @@ class SupplierController extends \BaseController
         } else if (strcmp($type, 'GS1-128-secondary') == 0) {
             $order = Orders::where('selected', '=', 1)->where('SId', '=', Auth::user()->id)->first();
             $order->PBarSecondary = $barcode;
+
+            SecondaryBar::create(array(
+                'orderNum' => $order->orderNum,
+                'PBarcode' => $order->PBarcode,
+                'PBarSecondary' => $barcode
+            ));
+
             $date_start = strpos($barcode, '17') + 2;
             $date_length = 6;
             $date = date_create_from_format('Ymd H:i:s', '20' . substr($barcode, $date_start, $date_length) . ' 00:00:00');
@@ -103,6 +110,13 @@ class SupplierController extends \BaseController
                 //dd($order);
                 $order->PBarSecondary = $barcode;
                 $exp = '0000-00-00 00:00:00';
+
+                SecondaryBar::create(array(
+                    'orderNum' => $order->orderNum,
+                    'PBarcode' => $order->PBarcode,
+                    'PBarSecondary' => $barcode
+                ));
+
                 if ($barcode[1] != '$') {
                     $len = strlen($barcode) - 8;
                     $exp = date_create_from_format('z Y', substr($barcode, 3, 3) . ' 20' . substr($barcode, 1, 2));

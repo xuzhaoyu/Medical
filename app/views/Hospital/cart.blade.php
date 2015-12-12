@@ -33,6 +33,9 @@
 
 <body>
 
+@if (count($orders) == 0)
+您的购物车是空的
+@else
 请再次确认订单并发送
 <form action=" {{ URL::route('hospital-cart-post') }} " method="post">
     <table>
@@ -71,7 +74,7 @@
 </form>
 <br>
 </body>
-
+@endif
 @stop
 
 

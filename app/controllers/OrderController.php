@@ -12,7 +12,7 @@ class OrderController extends \BaseController{
     {
         $p = DB::table('product')
             ->select('id', 'MName', 'PName', 'SName', 'PSize', 'mode', 'FDAcode', 'FDAexpire')
-            ->get();
+            ->paginate(25);
         return View::make('Hospital.productList')->with('products', $p);
     }
 
@@ -22,7 +22,7 @@ class OrderController extends \BaseController{
         $rand = (string)rand(1000,9999);
 
         $products = DB::table('product')
-            ->select('id', 'MName', 'PName', 'PSize', 'mode', 'FDAcode', 'FDAexpire', 'SId')
+            ->select('id', 'MName', 'PName', 'PBarcode', 'PSize', 'mode', 'FDAcode', 'FDAexpire', 'SId')
             ->get();
         foreach ($products as $p) {
             $number = (int)Input::get($p -> id);
@@ -41,7 +41,7 @@ class OrderController extends \BaseController{
                     'PName' => $p->PName,
                     'PSize' => $p->PSize,
                     'PCount' => $number,
-                    'PBarcode' => '',
+                    'PBarcode' => $p->PBarcode,
                     'HBarcode' => $barcode,
                     'expire' => '',
                     'HName' => Auth::user()->HName,
@@ -95,6 +95,8 @@ class OrderController extends \BaseController{
             }
         }
 
+        return Redirect::route('hospital-list')-> with('global', '已成功确认订单，并给代理商发送邮件');
+
         $orders = Orders::where('orderNum', '=', Input::get('id'))->groupBy('SId')->get(['SId']);
         foreach($orders as $order) {
             $email = User::where('id', '=', $order->SId)->first(['email']);
@@ -106,6 +108,8 @@ class OrderController extends \BaseController{
             });
             echo $stuff;
         }
+
         return Redirect::route('hospital-list')-> with('global', '已成功确认订单，并给代理商发送邮件');
+
     }
 }

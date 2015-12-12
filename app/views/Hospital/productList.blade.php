@@ -38,8 +38,9 @@
 
 <input type="submit" value="搜索">
 </form>
-
 <br>
+
+<?php echo $products->links(); ?>
 
 <form action=" {{ URL::route('hospital-list-post') }} " method="post">
 <table>

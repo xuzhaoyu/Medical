@@ -36,17 +36,9 @@
 
     <body>
     @foreach ($nums as $num)
-        订单号：{{$num->orderNum}} 订单日期：{{$num->OrderDate}} 发货日期：{{$num->SendDate}} 完成日期：{{$num->ReceivedDate}}
-        状态：{{$num->status}} 订货机构：{{$num->HName}} 订货人：{{$num->HUser}} @if($num->status != 'sent')<a
-                href="{{URL::route('incomplete')}}/send/{{$num->id}}">发货</a> @endif
-                <!-- <table>
-            <tr>
-                <th>产品名称</th>
-                <th>产品编号</th>
-                <th>医院产品名称</th>
-                <th>过期日期</th>
-                <th>数量</th>
-            </tr> -->
+        订单号：{{$num->orderNum}} 订单日期：{{$num->SendDate}} 状态：{{$num->status}} 订货机构：{{$num->HName}} 订货人：{{$num->HUser}}
+        @if($num->status != 'sent')<ahref="{{URL::route('incomplete')}}/send/{{$num->id}}">发货</a>
+        @endif
         @foreach ($orders as $order)
             @if ($order->orderNum == $num->orderNum)
                 <br>
@@ -56,23 +48,30 @@
                 {{$order->PSize}}
                 {{$order->HBarcode}}
                 剩余数量: {{$order->PCount - $order->actual}}
-                        <!-- <tr>
-                        <td>{{$order->PName}}</td>
-                        <td>{{$order->PBarcode}}</td>
-                        <td>{{$order->HBarcode}}</td>
-                        <td>{{$order->expire}}</td>
-                        <td>{{$order->PCount}}</td>
-                    </tr> -->
-                @endif
+                <?php
+                $codes = DB::table('secondary_barcode')
+                    ->where('orderNum', '=', $order->orderNum)
+                    ->select('PBarcode', 'PBarSecondary')
+                    ->get();
+                ?>
+                <br><br> 条码：<br>
+                @foreach ($codes as $s)
+                    {{$s->PBarcode}}
+                    -----
+                    {{$s->PBarSecondary}}
+                    <br>
                 @endforeach
-                        <!-- </table> -->
-                <br>
-                <br>
-                @endforeach
-                {{ Form::open(array('route' => 'scan')) }}
-                {{ Form::text('product') }}
-                {{ Form::hidden('id', $order->id) }}
-                {{ Form::submit('确认') }}
-                {{ Form::close() }}
+            @endif
+         @endforeach
+         <br>
+         <br>
+     @endforeach
+    {{ Form::open(array('route' => 'scan')) }}
+    {{ Form::text('product') }}
+    {{ Form::hidden('id', $order->id) }}
+    {{ Form::submit('确认') }}
+    {{ Form::close() }}
     </body>
 @stop
+
+
