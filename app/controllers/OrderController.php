@@ -80,10 +80,11 @@ class OrderController extends \BaseController{
     public function postCart()
     {
         date_default_timezone_set('Asia/Shanghai');
-        $products = DB::table('product')
+        $orders = DB::table('orders')
             ->select('id')
             ->get();
-        foreach ($products as $p) {
+
+        foreach ($orders as $p) {
             $number = (int)Input::get($p -> id);
             if ($number > 0) {
                 $items = Orders::where('id', '=', $p -> id)->update(array(
@@ -93,13 +94,14 @@ class OrderController extends \BaseController{
                 ));
             }
         }
+
         $orders = Orders::where('orderNum', '=', Input::get('id'))->groupBy('SId')->get(['SId']);
         foreach($orders as $order) {
             $email = User::where('id', '=', $order->SId)->first(['email']);
             $stuff = Orders::where('orderNum', '=', Input::get('id'))->where('SId', '=', $order->SId)->get();
             Mail::send('email', array('stuffs' => $stuff, 'email'), function($message) use ($email, $stuff)
             {
-                $message->from('xuzhaoyu1234@sina.com', 'Laravel');
+                $message->from('botenv@126.com', 'Laravel');
                 $message->to($email->email, 'John Smith')->subject('订单: '.$stuff[0]->orderNum);
             });
             echo $stuff;

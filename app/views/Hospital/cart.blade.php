@@ -48,14 +48,15 @@
             <th>厂家名称</th>
             <th>规格</th>
         </tr>
-
         @foreach ($orders as $p)
         <tr>
             <td><a href="{{URL::route('hospital-cart')}}/delete/{{$p->id}}">删除产品</a></td>
             <td><?php
                 $number = $p->PCount;
                 echo Form::text($p->id, $number);
-            ?></td>
+            ?>
+                {{ Form::hidden('id', $p->orderNum) }}
+            </td>
             <td>{{$p->HBarcode}}</td>
             <td>{{$p->PName}}</td>
             <td>{{$p->MName}}</td>
@@ -65,7 +66,6 @@
     </table>
 
     <table>
-        {{ Form::hidden('id', $orders[0]->orderNum) }}
         <tr><th><input type="submit" value="确认下单"></th></tr>
     </table>
 </form>
