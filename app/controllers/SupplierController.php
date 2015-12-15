@@ -41,6 +41,16 @@ class SupplierController extends \BaseController
         $type = '';
         date_default_timezone_set('Asia/Shanghai');
 
+        if (array_key_exists('mac', $input)) {
+            $scanner = DB::table('scanner')->where('mac', '=', $input['mac'])->first();
+            $id = $scanner->userId;
+            $username = $scanner->username;
+        } else
+        {
+            $id = Cache::get('id');
+            $username = Cache::get('username');
+        }
+
         if (strcmp(substr($barcode, 0, 2), '01') == 0) $type = 'GS1-128-primary';
         else if (strcmp(substr($barcode, 0, 2), '17') == 0) $type = 'GS1-128-secondary';
         else if ($barcode[0] == '+') $type = 'HIBC';
@@ -50,14 +60,15 @@ class SupplierController extends \BaseController
             $item = DB::table('product')->select('MName', 'PName', 'PSize')->where('PBarcode', '=', $barcode)->first();
             $order = Orders::where('MName', '=', $item->MName)->where('PName', '=', $item->PName)->where('PSize', '=', $item->PSize)->orderBy('orderNum', 'ASC')->first();
             $order->PBarcode = $barcode;
-            $order->SUser = Auth::user()->username;
-            $order->SId = Auth::user()->id;
+            $order->SUser = $username;
+            $order->SId = $id;
             $order->selected = 1;
             $order->save();
             $a = array('Mcode' => substr($barcode, 3, 8),
                 'huohao' => substr($barcode, 12, 4));
         } else if (strcmp($type, 'GS1-128-secondary') == 0) {
-            $order = Orders::where('selected', '=', 1)->where('SId', '=', Auth::user()->id)->first();
+
+            $order = Orders::where('selected', '=', 1)->where('SId', '=', $id)->first();
             $order->PBarSecondary = $barcode;
 
             SecondaryBar::create(array(
@@ -100,13 +111,13 @@ class SupplierController extends \BaseController
             if (strcmp(substr($barcode, 0, 2), '+H') == 0) {
                 $item = DB::table('product')->select('MName', 'PName', 'PSize')->where('PBarcode', '=', $barcode)->first();
                 $order = Orders::where('MName', '=', $item->MName)->where('PName', '=', $item->PName)->where('PSize', '=', $item->PSize)->orderBy('orderNum', 'ASC')->first();
-                $order->SUser = Auth::user()->username;
-                $order->SId = Auth::user()->id;
+                $order->SUser = $username;
+                $order->SId = $id;
                 $order->PBarcode = $barcode;
                 $order->selected = 1;
                 $order->save();
             } else {
-                $order = Orders::where('selected', '=', 1)->where('SId', '=', Auth::user()->id)->first();
+                $order = Orders::where('selected', '=', 1)->where('SId', '=', $id)->first();
                 //dd($order);
                 $order->PBarSecondary = $barcode;
                 $exp = '0000-00-00 00:00:00';
@@ -244,6 +255,8 @@ class SupplierController extends \BaseController
                 $order->save();
             }
         } else if (strcmp($type, 'EAN-13') == 0) dd($type);
-        return Redirect::to(URL::route('incomplete'));
+
+        //Scanner Cannot go into Redirect without proper Cookies
+        if (!array_key_exists('mac', $input)) return Redirect::to(URL::route('incomplete'));
     }
 }

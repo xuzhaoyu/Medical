@@ -12,7 +12,8 @@ class OrderController extends \BaseController{
     {
         $p = DB::table('product')
             ->select('id', 'MName', 'PName', 'SName', 'PSize', 'mode', 'FDAcode', 'FDAexpire')
-            ->paginate(25);
+            ->get();
+            //->paginate(25);
         return View::make('Hospital.productList')->with('products', $p);
     }
 
@@ -27,7 +28,7 @@ class OrderController extends \BaseController{
         foreach ($products as $p) {
             $number = (int)Input::get($p -> id);
             if ($number > 0) {
-                $HName = Auth::user()->HName;
+                $HName = Cache::get('HName');
                 $h = DB::table('hospital_barcode')
                     ->where('Pid', '=', $p->id)
                     ->where('HName', '=', $HName)
@@ -44,8 +45,8 @@ class OrderController extends \BaseController{
                     'PBarcode' => $p->PBarcode,
                     'HBarcode' => $barcode,
                     'expire' => '',
-                    'HName' => Auth::user()->HName,
-                    'HUser' => Auth::user()->username,
+                    'HName' => Cache::get('HName'),
+                    'HUser' => Cache::get('username'),
                     'SId' => $p->SId,
                     'SUser' => '',
                     'status' => 'pending',
@@ -61,7 +62,7 @@ class OrderController extends \BaseController{
 
     public function getCart()
     {
-        $HName = Auth::user() -> HName;
+        $HName = Cache::get('HName');
         $p = DB::table('orders')
             ->where('HName', '=', $HName)
             ->where('status', '=', 'pending')
@@ -75,6 +76,19 @@ class OrderController extends \BaseController{
             ->where('id', '=', $order_id)
             ->delete();
         return Redirect::to(URL::route('hospital-cart'));
+    }
+
+    public function postSearch()
+    {
+        $s = Input::get() ["search"];
+        $s = str_replace(" ", "%", $s);
+        $items = DB::table('product')
+            ->where('PName', 'LIKE', '%'.$s.'%')
+            ->orWhere('SName', 'LIKE', '%'.$s.'%')
+            ->select('id', 'MName', 'PName', 'SName', 'PBarcode', 'PSize', 'mode', 'FDAcode', 'FDAexpire')
+            ->get();
+        //return Redirect::to(URL::route('hospital-list'))->with('products', $items);
+        return View::make('Hospital.productList')->with('products', $items);
     }
 
     public function postCart()
@@ -95,7 +109,7 @@ class OrderController extends \BaseController{
             }
         }
 
-        return Redirect::route('hospital-list')-> with('global', '已成功确认订单，并给代理商发送邮件');
+        //return Redirect::route('hospital-list')-> with('global', '已成功确认订单，并给代理商发送邮件');
 
         $orders = Orders::where('orderNum', '=', Input::get('id'))->groupBy('SId')->get(['SId']);
         foreach($orders as $order) {
