@@ -109,7 +109,7 @@ class OrderController extends \BaseController{
             }
         }
 
-        //return Redirect::route('hospital-list')-> with('global', '已成功确认订单，并给代理商发送邮件');
+        return Redirect::route('hospital-list')-> with('global', '已成功确认订单，并给代理商发送邮件');
 
         $orders = Orders::where('orderNum', '=', Input::get('id'))->groupBy('SId')->get(['SId']);
         foreach($orders as $order) {

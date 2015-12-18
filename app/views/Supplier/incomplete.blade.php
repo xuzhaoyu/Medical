@@ -36,8 +36,10 @@
 
 <body>
 @foreach ($nums as $num)
-订单号：{{$num->orderNum}} 订单日期：{{$num->SendDate}} 状态：{{$num->status}} 订货机构：{{$num->HName}} 订货人：{{$num->HUser}}
-@if($num->status != 'sent')<ahref="{{URL::route('incomplete')}}/send/{{$num->id}}">发货</a>
+订单号：{{$num->orderNum}} 订单日期：{{$num->SendDate}} 状态：{{$num->status}}
+订货机构：{{$num->HName}} 订货人：{{$num->HUser}}
+
+@if($num->status != 'sent') <ahref="{{URL::route('incomplete')}}/send/{{$num->id}}">发货</a>
 @endif
     @foreach ($orders as $order)
     @if ($order->orderNum == $num->orderNum)
@@ -46,6 +48,7 @@
     {{$order->MName}}
     {{$order->PName}}
     {{$order->PSize}}
+    {{$order->PBarcode}}
     {{$order->HBarcode}}
     剩余数量: {{$order->PCount - $order->actual}}
     <?php

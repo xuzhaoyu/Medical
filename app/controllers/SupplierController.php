@@ -64,7 +64,7 @@ class SupplierController extends \BaseController
             $PBarPrimary = Cache::get('PBarPrimary');
             Cache::forget('PBarPrimary');
             $order = Orders::where('PBarcode', '=', $PBarPrimary)->where('SId', '=', $id)->first();
-            if ((int)$order->PCount < (int)$order->actual) {
+            if ((int)$order->PCount <= (int)$order->actual) {
                 //Scanner Cannot go into Redirect without proper Cookies
                 if (!array_key_exists('mac', $input)) return Redirect::to(URL::route('incomplete'));
                 else return;
@@ -110,7 +110,7 @@ class SupplierController extends \BaseController
                 $PBarPrimary = Cache::get('PBarPrimary');
                 Cache::forget('PBarPrimary');
                 $order = Orders::where('PBarcode', '=', $PBarPrimary)->where('SId', '=', $id)->first();
-                if ((int)$order->PCount < (int)$order->actual) {
+                if ((int)$order->PCount <= (int)$order->actual) {
                     //Scanner Cannot go into Redirect without proper Cookies
                     if (!array_key_exists('mac', $input)) return Redirect::to(URL::route('incomplete'));
                     else return;
