@@ -39,7 +39,7 @@
 订单号：{{$num->orderNum}} 订单日期：{{$num->SendDate}} 状态：{{$num->status}}
 订货机构：{{$num->HName}} 订货人：{{$num->HUser}}
 
-@if($num->status != 'sent') <ahref="{{URL::route('incomplete')}}/send/{{$num->id}}">发货</a>
+@if($num->status != 'sent') <a href="{{URL::route('incomplete')}}/send/{{$num->id}}">发货</a>
 @endif
     @foreach ($orders as $order)
     @if ($order->orderNum == $num->orderNum)
@@ -75,6 +75,7 @@
 <?php //MAC：{{ Form::text('mac') }} ?>
 {{ Form::submit('确认') }}
 {{ Form::close() }}
+
 </body>
 @stop
 

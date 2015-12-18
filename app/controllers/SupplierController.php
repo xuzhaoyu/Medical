@@ -17,8 +17,8 @@ class SupplierController extends \BaseController
 
     public function getComplete()
     {
-        $comp = Orders::where('status', '=', 'complete')->orderBy('orderNum', 'DESC')->get();
-        $num = Orders::where('status', '=', 'complete')->groupBy('orderNum')->orderBy('orderNum', 'DESC')->get();
+        $comp = Orders::where('status', '=', 'sent')->orderBy('orderNum', 'DESC')->get();
+        $num = Orders::where('status', '=', 'sent')->groupBy('orderNum')->orderBy('orderNum', 'DESC')->get();
         //$page = Paginator::make($num, count($num), 1);
         return View::make('Supplier.complete')->with('orders', $comp)->with('nums', $num);
     }
