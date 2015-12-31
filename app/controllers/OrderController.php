@@ -11,8 +11,9 @@ class OrderController extends \BaseController{
     public function getList()
     {
         $p = DB::table('product')
-            ->select('id', 'MName', 'PName', 'PSize', 'mode', 'FDAcode', 'FDAexpire')
+            ->select('id', 'MName', 'PName', 'SName', 'PSize', 'mode', 'FDAcode', 'FDAexpire')
             ->get();
+            //->paginate(25);
         return View::make('Hospital.productList')->with('products', $p);
     }
 
@@ -22,12 +23,12 @@ class OrderController extends \BaseController{
         $rand = (string)rand(1000,9999);
 
         $products = DB::table('product')
-            ->select('id', 'MName', 'PName', 'PSize', 'mode', 'FDAcode', 'FDAexpire', 'SId')
+            ->select('id', 'MName', 'PName', 'PBarcode', 'PSize', 'mode', 'FDAcode', 'FDAexpire', 'SId')
             ->get();
         foreach ($products as $p) {
             $number = (int)Input::get($p -> id);
             if ($number > 0) {
-                $HName = Auth::user()->HName;
+                $HName = Cache::get('HName');
                 $h = DB::table('hospital_barcode')
                     ->where('Pid', '=', $p->id)
                     ->where('HName', '=', $HName)
@@ -41,11 +42,11 @@ class OrderController extends \BaseController{
                     'PName' => $p->PName,
                     'PSize' => $p->PSize,
                     'PCount' => $number,
-                    'PBarcode' => '',
+                    'PBarcode' => $p->PBarcode,
                     'HBarcode' => $barcode,
                     'expire' => '',
-                    'HName' => Auth::user()->HName,
-                    'HUser' => Auth::user()->username,
+                    'HName' => Cache::get('HName'),
+                    'HUser' => Cache::get('username'),
                     'SId' => $p->SId,
                     'SUser' => '',
                     'status' => 'pending',
@@ -61,7 +62,7 @@ class OrderController extends \BaseController{
 
     public function getCart()
     {
-        $HName = Auth::user() -> HName;
+        $HName = Cache::get('HName');
         $p = DB::table('orders')
             ->where('HName', '=', $HName)
             ->where('status', '=', 'pending')
@@ -77,13 +78,27 @@ class OrderController extends \BaseController{
         return Redirect::to(URL::route('hospital-cart'));
     }
 
+    public function postSearch()
+    {
+        $s = Input::get() ["search"];
+        $s = str_replace(" ", "%", $s);
+        $items = DB::table('product')
+            ->where('PName', 'LIKE', '%'.$s.'%')
+            ->orWhere('SName', 'LIKE', '%'.$s.'%')
+            ->select('id', 'MName', 'PName', 'SName', 'PBarcode', 'PSize', 'mode', 'FDAcode', 'FDAexpire')
+            ->get();
+        //return Redirect::to(URL::route('hospital-list'))->with('products', $items);
+        return View::make('Hospital.productList')->with('products', $items);
+    }
+
     public function postCart()
     {
         date_default_timezone_set('Asia/Shanghai');
-        $products = DB::table('product')
+        $orders = DB::table('orders')
             ->select('id')
             ->get();
-        foreach ($products as $p) {
+
+        foreach ($orders as $p) {
             $number = (int)Input::get($p -> id);
             if ($number > 0) {
                 $items = Orders::where('id', '=', $p -> id)->update(array(
@@ -93,17 +108,22 @@ class OrderController extends \BaseController{
                 ));
             }
         }
+
+        return Redirect::route('hospital-list')-> with('global', '已成功确认订单，并给代理商发送邮件');
+
         $orders = Orders::where('orderNum', '=', Input::get('id'))->groupBy('SId')->get(['SId']);
         foreach($orders as $order) {
             $email = User::where('id', '=', $order->SId)->first(['email']);
             $stuff = Orders::where('orderNum', '=', Input::get('id'))->where('SId', '=', $order->SId)->get();
             Mail::send('email', array('stuffs' => $stuff, 'email'), function($message) use ($email, $stuff)
             {
-                $message->from('xuzhaoyu1234@sina.com', 'Laravel');
+                $message->from('botenv@126.com', 'Laravel');
                 $message->to($email->email, 'John Smith')->subject('订单: '.$stuff[0]->orderNum);
             });
             echo $stuff;
         }
+
         return Redirect::route('hospital-list')-> with('global', '已成功确认订单，并给代理商发送邮件');
+
     }
 }

@@ -21,16 +21,23 @@ class AccountController extends \BaseController{
 
     public function postLogin()
     {
-        $email = Input::get('email');
+        $emailOrUsername = Input::get('email');
         $password = Input::get('password');
 
 //        dd(Hash::make(Input::get('password')));
 
-        if (Auth::attempt(array('username' => $email, 'password' => $password), true))
+        if (Auth::attempt(array('username' => $emailOrUsername, 'password' => $password), true)){
+            Cache::forever('username', $emailOrUsername);
+            Cache::forever('HId', User::where('username', '=', $emailOrUsername)->first()['id']);
+            Cache::forever('HName', User::where('username', '=', $emailOrUsername)->first()['HName']);
             return Redirect::route('hospital-list');
+        }
 
-        if (Auth::attempt(array('email' => $email, 'password' => $password), true))
+        if (Auth::attempt(array('email' => $emailOrUsername, 'password' => $password), true)){
+            Cache::forever('id', User::where('email', '=', $emailOrUsername)->first()['id']);
+            Cache::forever('username', User::where('email', '=', $emailOrUsername)->first()['username']);
             return View::make('supplier');
+        }
 
         return Redirect::route('account-login')-> with('global', '用户名或密码错误');
     }

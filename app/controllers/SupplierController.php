@@ -10,15 +10,15 @@ class SupplierController extends \BaseController
 {
     public function getIncomplete()
     {
-        $inc = Orders::where('status', '<>', 'complete')->where('SId', '=', Auth::user()->id)->orderBy('orderNum', 'DESC')->get();
-        $num = Orders::where('status', '<>', 'complete')->where('SId', '=', Auth::user()->id)->groupBy('orderNum')->orderBy('orderNum', 'DESC')->get();
+        $inc = Orders::where('status', '=', 'ordered')->orderBy('orderNum', 'DESC')->get();
+        $num = Orders::where('status', '=', 'ordered')->groupBy('orderNum')->orderBy('orderNum', 'DESC')->get();
         return View::make('Supplier.incomplete')->with('orders', $inc)->with('nums', $num);
     }
 
     public function getComplete()
     {
-        $comp = Orders::where('status', '=', 'complete')->where('SId', '=', Auth::user()->id)->orderBy('orderNum', 'DESC')->get();
-        $num = Orders::where('status', '=', 'complete')->where('SId', '=', Auth::user()->id)->groupBy('orderNum')->orderBy('orderNum', 'DESC')->get();
+        $comp = Orders::where('status', '=', 'sent')->orderBy('orderNum', 'DESC')->get();
+        $num = Orders::where('status', '=', 'sent')->groupBy('orderNum')->orderBy('orderNum', 'DESC')->get();
         //$page = Paginator::make($num, count($num), 1);
         return View::make('Supplier.complete')->with('orders', $comp)->with('nums', $num);
     }
@@ -41,24 +41,35 @@ class SupplierController extends \BaseController
         $type = '';
         date_default_timezone_set('Asia/Shanghai');
 
+        if (array_key_exists('mac', $input)) {
+            $scanner = DB::table('scanner')->where('mac', '=', $input['mac'])->first();
+            $id = $scanner->userId;
+            $username = $scanner->username;
+        } else
+        {
+            $id = Cache::get('id');
+            $username = Cache::get('username');
+        }
+
         if (strcmp(substr($barcode, 0, 2), '01') == 0) $type = 'GS1-128-primary';
         else if (strcmp(substr($barcode, 0, 2), '17') == 0) $type = 'GS1-128-secondary';
         else if ($barcode[0] == '+') $type = 'HIBC';
         else if ((strlen($barcode) == 13) && ($barcode[0] == '6')) $type = 'EAN-13';
 
         if (strcmp($type, 'GS1-128-primary') == 0) {
-            $item = DB::table('product')->select('MName', 'PName', 'PSize')->where('PBarcode', '=', $barcode)->first();
-            $order = Orders::where('MName', '=', $item->MName)->where('PName', '=', $item->PName)->where('PSize', '=', $item->PSize)->orderBy('orderNum', 'ASC')->first();
-            $order->PBarcode = $barcode;
-            $order->SUser = Auth::user()->username;
-            $order->SId = Auth::user()->id;
-            $order->selected = 1;
-            $order->save();
+            Cache::put('PBarPrimary', $barcode, 10);
             $a = array('Mcode' => substr($barcode, 3, 8),
                 'huohao' => substr($barcode, 12, 4));
         } else if (strcmp($type, 'GS1-128-secondary') == 0) {
-            $order = Orders::where('selected', '=', 1)->where('SId', '=', Auth::user()->id)->first();
-            $order->PBarSecondary = $barcode;
+            $PBarPrimary = Cache::get('PBarPrimary');
+            Cache::forget('PBarPrimary');
+            $order = Orders::where('PBarcode', '=', $PBarPrimary)->where('SId', '=', $id)->first();
+            if ((int)$order->PCount <= (int)$order->actual) {
+                //Scanner Cannot go into Redirect without proper Cookies
+                if (!array_key_exists('mac', $input)) return Redirect::to(URL::route('incomplete'));
+                else return;
+            }
+
             $date_start = strpos($barcode, '17') + 2;
             $date_length = 6;
             $date = date_create_from_format('Ymd H:i:s', '20' . substr($barcode, $date_start, $date_length) . ' 00:00:00');
@@ -79,29 +90,32 @@ class SupplierController extends \BaseController
                 $lot = substr($barcode, $lot_start);
                 $serial = ' ';
             }
-            $order->expire = date_format($date, 'Y-m-d H:i:s');
-            $order->actual = $order->actual + 1;
-            $order->selected = 0;
-            $order->SerialNum = $serial;
-            $order->lot = $lot;
-            $order->save();
-            $a = array(
+
+            SecondaryBar::create(array(
+                'orderNum' => $order->orderNum,
+                'PBarcode' => $order->PBarcode,
+                'PBarSecondary' => $barcode,
                 'expire' => date_format($date, 'Y-m-d H:i:s'),
-                'LOT' => $lot,
-                'SerialNum' => $serial);
+                'lot' => $lot,
+                'SerialNum' => $serial
+            ));
+            $order->SUser = $username;
+            $order->actual = $order->actual + 1;
+            $order->save();
+
         } else if (strcmp($type, 'HIBC') == 0) {
             if (strcmp(substr($barcode, 0, 2), '+H') == 0) {
-                $item = DB::table('product')->select('MName', 'PName', 'PSize')->where('PBarcode', '=', $barcode)->first();
-                $order = Orders::where('MName', '=', $item->MName)->where('PName', '=', $item->PName)->where('PSize', '=', $item->PSize)->orderBy('orderNum', 'ASC')->first();
-                $order->SUser = Auth::user()->username;
-                $order->SId = Auth::user()->id;
-                $order->PBarcode = $barcode;
-                $order->selected = 1;
-                $order->save();
+                Cache::put('PBarPrimary', $barcode, 10);
             } else {
-                $order = Orders::where('selected', '=', 1)->where('SId', '=', Auth::user()->id)->first();
-                //dd($order);
-                $order->PBarSecondary = $barcode;
+                $PBarPrimary = Cache::get('PBarPrimary');
+                Cache::forget('PBarPrimary');
+                $order = Orders::where('PBarcode', '=', $PBarPrimary)->where('SId', '=', $id)->first();
+                if ((int)$order->PCount <= (int)$order->actual) {
+                    //Scanner Cannot go into Redirect without proper Cookies
+                    if (!array_key_exists('mac', $input)) return Redirect::to(URL::route('incomplete'));
+                    else return;
+                }
+
                 $exp = '0000-00-00 00:00:00';
                 if ($barcode[1] != '$') {
                     $len = strlen($barcode) - 8;
@@ -223,13 +237,21 @@ class SupplierController extends \BaseController
                 } else {
                     dd('HIBC Secondary $$+');
                 }
-                $order->expire = $exp;
+
+                SecondaryBar::create(array(
+                    'orderNum' => $order->orderNum,
+                    'PBarcode' => $order->PBarcode,
+                    'PBarSecondary' => $barcode,
+                    'expire' => $exp,
+                    'lot' => $lot,
+                ));
+                $order->SUser = $username;
                 $order->actual = $order->actual + 1;
-                $order->selected = 0;
-                $order->lot = $lot;
                 $order->save();
             }
         } else if (strcmp($type, 'EAN-13') == 0) dd($type);
-        return Redirect::to(URL::route('incomplete'));
+
+        //Scanner Cannot go into Redirect without proper Cookies
+        if (!array_key_exists('mac', $input)) return Redirect::to(URL::route('incomplete'));
     }
 }

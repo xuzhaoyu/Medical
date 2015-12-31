@@ -1,4 +1,4 @@
-@extends('layouts.hospital')
+    @extends('layouts.hospital')
 
 @section('content')
 
@@ -38,8 +38,9 @@
 
 <input type="submit" value="搜索">
 </form>
-
 <br>
+
+<?php //echo $products->links(); ?>
 
 <form action=" {{ URL::route('hospital-list-post') }} " method="post">
 <table>
@@ -61,8 +62,8 @@
     @foreach ($products as $p)
     <tr>
         <?php
-        $name = Auth::user()->username;
-        $HName = Auth::user()->HName;
+        $name = Cache::get('username');
+        $HName = Cache::get('HName');
         $h = DB::table('hospital_barcode')
             ->where('Pid', '=', $p->id)
             ->where('HName', '=', $HName)

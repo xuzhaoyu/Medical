@@ -33,6 +33,9 @@
 
 <body>
 
+@if (count($orders) == 0)
+您的购物车是空的
+@else
 请再次确认订单并发送
 <form action=" {{ URL::route('hospital-cart-post') }} " method="post">
     <table>
@@ -54,7 +57,9 @@
             <td><?php
                 $number = $p->PCount;
                 echo Form::text($p->id, $number);
-            ?></td>
+            ?>
+                {{ Form::hidden('id', $p->orderNum) }}
+            </td>
             <td>{{$p->HBarcode}}</td>
             <td>{{$p->PName}}</td>
             <td>{{$p->MName}}</td>
@@ -64,13 +69,12 @@
     </table>
 
     <table>
-        {{ Form::hidden('id', $orders[0]->orderNum) }}
         <tr><th><input type="submit" value="确认下单"></th></tr>
     </table>
 </form>
 <br>
 </body>
-
+@endif
 @stop
 
 
