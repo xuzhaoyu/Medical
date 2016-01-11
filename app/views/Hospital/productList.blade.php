@@ -84,7 +84,7 @@
     </tr>
     @endforeach
 </table>
-
+    {{$products->links()}}
     <table>
         <tr><th><input type="submit" value="提交全部订单"></th></tr>
     </table>
