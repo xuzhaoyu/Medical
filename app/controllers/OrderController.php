@@ -63,7 +63,7 @@ class OrderController extends \BaseController{
     public function getComplete(){
         $inc = Orders::where('HUser', '=', Auth::user()['username'])->orderBy('orderNum', 'DESC')->get();
         $num = Orders::where('HUser', '=', Auth::user()['username'])->groupBy('orderNum')->orderBy('orderNum', 'DESC')->get();
-        return View::make('Supplier.incomplete')->with('orders', $inc)->with('nums', $num);
+        return View::make('Hospital.finished')->with('orders', $inc)->with('nums', $num);
     }
     public function getCart()
     {
