@@ -56,6 +56,11 @@ Route::get('/hospital/cart', array(
     'uses' => 'OrderController@getCart'
 ));
 
+Route::get('/hospital/complete', array(
+    'as' => 'hospital-complete',
+    'uses' => 'OrderController@getComplete'
+));
+
 Route::post('/hospital/cart', array(
     'as' => 'hospital-cart-post',
     'uses' => 'OrderController@postCart'

@@ -60,6 +60,11 @@ class OrderController extends \BaseController{
         return Redirect::route('hospital-list')-> with('global', '商品已加入购物车');
     }
 
+    public function getComplete(){
+        $inc = Orders::where('HUser', '=', Auth::user()['username'])->orderBy('orderNum', 'DESC')->get();
+        $num = Orders::where('HUser', '=', Auth::user()['username'])->groupBy('orderNum')->orderBy('orderNum', 'DESC')->get();
+        return View::make('Supplier.incomplete')->with('orders', $inc)->with('nums', $num);
+    }
     public function getCart()
     {
         $HName = Cache::get('HName');
