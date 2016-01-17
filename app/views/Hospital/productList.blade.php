@@ -1,4 +1,4 @@
-    @extends('layouts.hospital')
+@extends('layouts.hospital')
 
 @section('content')
 
@@ -55,9 +55,7 @@
         <th>厂家名称</th>
         <th>代理商名称</th>
         <th>规格</th>
-        <th>管理模式</th>
-        <th>注册证号</th>
-        <th>注册到期日</th>
+        <th>货号</th>
     </tr>
     @foreach ($products as $p)
     <tr>
@@ -78,9 +76,7 @@
         <td>{{$p->MName}}</td>
         <td>{{$p->SName}}</td>
         <td>{{$p->PSize}}</td>
-        <td>{{$p->mode}}</td>
-        <td>{{$p->FDAcode}}</td>
-        <td>{{$p->FDAexpire}}</td>
+        <td>{{$p->Huohao}}</td>
     </tr>
     @endforeach
 </table>

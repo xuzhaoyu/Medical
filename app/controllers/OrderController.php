@@ -11,7 +11,7 @@ class OrderController extends \BaseController{
     public function getList()
     {
         $products = DB::table('product')
-            ->select('id', 'MName', 'PName', 'SName', 'PSize', 'mode', 'FDAcode', 'FDAexpire')
+            ->select('id', 'MName', 'PName', 'SName', 'PSize', 'Huohao')
             //->get();
             ->paginate(10);
         return View::make('Hospital.productList',compact('products'));

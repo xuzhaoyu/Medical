@@ -1,4 +1,4 @@
-@extends('layouts.supplier')
+@extends('layouts.hospital')
 
 @section('content')
     <style>
